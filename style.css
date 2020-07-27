@@ -1,0 +1,52 @@
+body {
+    background-image: linear-gradient(to top, #fff1eb 0%, #ace0f9 100%);
+}
+
+header {
+    margin: auto;
+    width: 50%;
+    padding: 30px;
+    
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 26px;
+    letter-spacing: -0.6px;
+    word-spacing: 0px;
+    color: #000000;
+    font-weight: 400;
+    text-decoration: none solid rgb(68, 68, 68);
+    font-style: italic;
+    font-variant: normal;
+    text-transform: capitalize;
+    text-align: center;
+    
+}
+
+#main {
+    margin: auto;
+    width: 50%;
+    border: 3px solid green;
+    padding: 100px;
+    background-image: linear-gradient(to top, #d299c2 0%, #fef9d7 100%);
+}
+
+
+#sidebar  {
+    width: 130px;
+    position: fixed;
+    z-index: 1;
+    top: 100px;
+    left: 40px;
+    background: #eee;
+    overflow-x: hidden;
+    padding: 8px 0;
+
+    background-image: linear-gradient(to top, #d299c2 0%, #fef9d7 100%);
+}
+
+#sidebar a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+}
