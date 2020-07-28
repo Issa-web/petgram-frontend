@@ -33,7 +33,7 @@ header {
 #sidebar  {
     width: 130px;
     position: fixed;
-    z-index: 1;
+    z-index: 0;
     border: 3px solid green;
     top: 100px;
     left: 55px;
@@ -65,7 +65,7 @@ header {
 .bg-modal {
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 1);
 
     position: absolute;
     top: 0;

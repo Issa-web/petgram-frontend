@@ -5,7 +5,9 @@ PETS_URL = BASE_URL + 'pets'
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    loginModal();
+    // when user goes to link, page loads and sees login modal. 
+    
+    // loginModal();
 
 
 
