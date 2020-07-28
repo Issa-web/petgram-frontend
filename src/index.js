@@ -13,6 +13,18 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+// Login Modal 
+
+const loginModal = () => {
+    document.querySelector('.bg-modal').style.display = 'flex';
+    /*
+    if we want to later close out the modal once we checked 
+    to see if the user exists, we can do 
+    document.querySelector('.bg-modal').style.display = 'none';
+    */
+}
+
+
 // Render Pets 
 const renderPets = () => {
     // clear working space 
