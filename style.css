@@ -34,8 +34,9 @@ header {
     width: 130px;
     position: fixed;
     z-index: 1;
+    border: 3px solid green;
     top: 100px;
-    left: 40px;
+    left: 55px;
     background: #eee;
     overflow-x: hidden;
     padding: 8px 0;
@@ -49,4 +50,8 @@ header {
     font-size: 25px;
     color: #818181;
     display: block;
+}
+
+#sidebar a:hover {
+    color: #064579;
 }
