@@ -42,14 +42,29 @@
 
 
     <!-- login modal -->
-    <div class="bg-modal">
+    <div id='login-modal' class="bg-modal">
         <div class="modal-contents">
             <div>PETGRAM</div>
             <form action="">
+                <p>Please login with your username or create a new username!</p>
                 <input type="text" placeholder="name">
-                <button class='button'>Submit</button>
-                <button class='button'>Create a new user!</button>
+                <input type='submit' id='login-submit' class='button'>
+                <button id='create-new-user' class='button'>Create a new user!</button>
             </form>
+        </div>
+    </div>
+
+    <!-- new user modal -->
+
+    <div id='new-user-modal' class="bg-modal">
+        <div class="modal-contents">
+            <div>You must be new! Please create a new user!</div>
+            <form id='new-user'>
+                <label>Username: </label>
+                <input type='text' name='username' placeholder='Username'> 
+                <input type='submit' class='form-submit-button'>
+            </form>
+            <button id='back-to-login' class='button'>Back to login</button>
         </div>
     </div>
 

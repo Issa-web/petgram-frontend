@@ -1,13 +1,15 @@
 BASE_URL = 'http://localhost:3000/'
 
+USERS_URL = BASE_URL + 'users'
+
 PETS_URL = BASE_URL + 'pets'
 
 
 document.addEventListener("DOMContentLoaded", () => {
 
     // when user goes to link, page loads and sees login modal. 
-    
-    // loginModal();
+
+    loginModal();
 
 
 
@@ -18,12 +20,102 @@ document.addEventListener("DOMContentLoaded", () => {
 // Login Modal 
 
 const loginModal = () => {
-    document.querySelector('.bg-modal').style.display = 'flex';
+    document.getElementById('login-modal').style.display = 'flex';
+    let form = document.querySelector('form');
+
+    // adding event listener to the submit button on login form
+    submitLogin(form);
     /*
     if we want to later close out the modal once we checked 
     to see if the user exists, we can do 
     document.querySelector('.bg-modal').style.display = 'none';
     */
+}
+
+// handles a submit event listener 
+const submitLogin = (form) => {
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        let username = e.target[0].value
+
+        checkUser(username);
+
+        // console.log(e.target[0].value)
+    })
+}
+
+// check if username exists within database 
+
+const checkUser = (username) => {
+    fetch(USERS_URL)
+    .then(resp => resp.json())
+    .then(users => {
+        console.log(users)
+        let user = users.find(user => {
+            return (user.name.toLowerCase() == username.toLowerCase()) 
+    })
+    if (user == undefined){
+        console.log("No user found! Please create a new user.")
+        newUserForm(username)
+    } else {
+        console.log('User found!')
+        clearLoginModal();
+        showUser(user)
+    }
+})
+}
+
+
+// a form for creating a new User 
+const newUserForm = (username) => {
+    let newUserModal = document.getElementById('new-user-modal')
+    newUserModal.style.display = 'flex'
+    let newUserForm = document.getElementById('new-user')
+
+    newUserForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        let newUsername = newUserForm[0].value 
+        console.log(newUsername)
+        // do a fetch request to post to users and create a new user. 
+        fetchCreateUser(newUserForm);
+        
+    })
+
+}
+
+// a function that sends a fetch(post) request to create a new user. 
+const fetchCreateUser = (newUserForm) => {
+    options = {
+        method: "POST",
+        headers: {
+            "content-type": "application/json",
+            "accept": "application/json"
+        },
+        body: JSON.stringify({
+            name: newUserForm[0].value
+        })
+    }
+
+    fetch(USERS_URL, options)
+    .then(resp => resp.json())
+    .then(user => {
+        // once a new user is created, clear out modal screens and take new user to first page.
+        let newUserModal = document.getElementById('new-user-modal');
+        newUserModal.style.display = 'none';
+        console.log(user)
+        
+        // showUser(user);
+    })
+}
+
+// a function that clears the login modal to enter into application 
+const clearLoginModal = () => {
+
+}
+
+// A function that, once logged in, takes us into the application. 
+const showUser = (user) => {
+    
 }
 
 
@@ -78,6 +170,3 @@ const renderPet = (pet) => {
 
 }
 
-
-
-// };
