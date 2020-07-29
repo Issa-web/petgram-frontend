@@ -88,7 +88,7 @@ const fetchCreateUser = (newUserForm) => {
         clearLoginModal();
         console.log(user)
         
-        // showUser(user);
+        showUser(user);
     })
 }
 
@@ -101,9 +101,48 @@ const clearLoginModal = () => {
 
 // A function that, once logged in, takes us into the application. 
 const showUser = (user) => {
-    
-    
+    let workingSpace = document.getElementById("working-space") 
+    workingSpace.innerHTML = '';
+    const profileDiv = document.createElement('div')
+    profileDiv.id = 'profile-div'
+    workingSpace.appendChild(profileDiv);
+
+    const profileName = document.createElement('div')
+    profileName.id = 'profile-name'
+    profileName.innerText = user.name
+    profileDiv.appendChild(profileName)
+
+    const petTitle = document.createElement('div')
+    petTitle.id = 'pet-title'
+    petTitle.innerText = "All pets"
+    profileDiv.appendChild(petTitle)
+
+    // iterate through all pets and 
+    // display the picture of the pet under the pet title div.
+    user.pets.forEach(pet => {
+
+        const petCard = document.createElement('div')
+        petCard.classList = 'pet-card'
+        petTitle.appendChild(petCard)
+
+        let petPic = document.createElement('img')
+        petPic.classList = 'pet-pic'
+        petPic.src = pet.pic_url
+        petCard.appendChild(petPic)
+
+        // when a user clicks on a pet image/card, it will take the user
+        // to the pet view page
+
+        petCard.addEventListener('click', (e) => {
+            console.log('you clicked this pet!')
+            console.log(pet)
+            // once the pet is clicked, render that pets page
+            renderPet(pet);
+        })
+    })
+
 }
+
 
 
 // Render Pets 
@@ -129,11 +168,11 @@ const fetchPets = () => {
 
 const renderPet = (pet) => {
     let workingSpace = document.getElementById("working-space")
-    // workingSpace.innerHTML = ''
+    workingSpace.innerHTML = ''
 
     // create pet div card 
     let petCard = document.createElement('div')
-    petCard.className = 'pet-card'
+    petCard.className = 'pet-page-card'
     workingSpace.appendChild(petCard)
 
 
@@ -145,7 +184,7 @@ const renderPet = (pet) => {
     // picture
     let imgDiv = document.createElement('div')
     let petPic = document.createElement('img')
-    petPic.id = 'pet-pic'
+    petPic.id = 'pet-page-pic'
     petPic.src = pet.pic_url
     imgDiv.appendChild(petPic)
     petCard.appendChild(imgDiv)

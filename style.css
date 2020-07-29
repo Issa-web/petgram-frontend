@@ -23,10 +23,18 @@ header {
 
 #main {
     margin: auto;
-    width: 50%;
+    width: 70%;
+    height: 70%;
     border: 3px solid green;
     padding: 100px;
     background-image: linear-gradient(to top, #d299c2 0%, #fef9d7 100%);
+}
+
+div#working-space {
+    border: 3px solid green;
+    width: 100%;
+    margin: 10px;
+    padding: 10px;
 }
 
 
@@ -89,4 +97,47 @@ input {
     width: 50%;
     display: block; 
     margin: 20px auto;
+}
+
+div#profile-name {
+    color: blue;
+    font-size: 40px;
+    text-align: center;
+}
+
+div#pet-title {
+    /* adds flex to make 3 images per row */
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0;
+
+
+    color: red;
+    font-size: 20px;
+    text-align: center;
+}
+
+div.pet-card {
+/* adds flex style to each card( 3 per row) */
+    list-style: none;
+    flex: 0 0 33.333333%;
+
+    /* margin: auto;
+    border-style: solid;
+    padding: 20px;  
+    width: 35%;
+    height: 55%; */
+
+    /* make each pet card a clickable circle */
+    position: relative;
+    width: 150x; 
+    height:200px; 
+    overflow: hidden; 
+    border-radius: 50%;
+    margin-left: -70px;
+}
+
+img.pet-pic {
+    width: 100%;
+    height: auto;
 }
