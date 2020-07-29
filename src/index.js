@@ -21,6 +21,17 @@ const loginModal = () => {
 
     // adding event listener to the submit button on login form
     submitLogin(form);
+    // if user clicks button, sends to the newuser modal
+    createNewUserButton();
+}
+
+// handles the click of the button "create new user"
+const createNewUserButton = () => {
+    const createButton = document.getElementById('create-new-user')
+    createButton.addEventListener('click', (e) => {
+        document.getElementById('login-modal').style.display = 'none';
+        newUserFormModal();
+    })
 }
 
 // handles a submit event listener 
@@ -43,7 +54,7 @@ const checkUser = (username) => {
     })
     if (user == undefined){
         console.log("No user found! Please create a new user.")
-        newUserForm(username)
+        newUserFormModal()
     } else {
         console.log('User found!')
         clearLoginModal();
@@ -53,16 +64,37 @@ const checkUser = (username) => {
 }
 
 // a form for creating a new User 
-const newUserForm = (username) => {
+const newUserFormModal = () => {
     let newUserModal = document.getElementById('new-user-modal')
     newUserModal.style.display = 'flex'
     let newUserForm = document.getElementById('new-user')
+    let backToLogin = document.getElementById('back-to-login')
+    
+    backToLogin.addEventListener('click', (e) => {
+        newUserModal.style.display = 'none'
+        document.getElementById('login-modal').style.display = 'flex';
+    })
 
     newUserForm.addEventListener('submit', (e) => {
         e.preventDefault();
         let newUsername = newUserForm[0].value 
         // do a fetch request to post to users and create a new user. 
-        fetchCreateUser(newUserForm);
+
+        // check if username is taken before adding in a new user 
+        fetch(USERS_URL)
+        .then(resp => resp.json())
+        .then(users => {
+            let user = users.find(user => {
+                return (user.name.toLowerCase() == newUsername.toLowerCase())
+            })
+            if (user == undefined){
+                fetchCreateUser(newUserForm);
+                console.log("Username Created!")
+            } else {
+                alert("Username has been taken! Please choose another!")
+            }
+    
+        })
         
     })
 
@@ -85,6 +117,8 @@ const fetchCreateUser = (newUserForm) => {
     .then(resp => resp.json())
     .then(user => {
         // once a new user is created, clear out modal screens and take new user to first page.
+
+        
         clearLoginModal();
         console.log(user)
         
