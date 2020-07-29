@@ -6,12 +6,8 @@ PETS_URL = BASE_URL + 'pets'
 
 
 document.addEventListener("DOMContentLoaded", () => {
-
     // when user goes to link, page loads and sees login modal. 
-
     loginModal();
-
-
 
     // renderPets(); 
 });
@@ -25,11 +21,6 @@ const loginModal = () => {
 
     // adding event listener to the submit button on login form
     submitLogin(form);
-    /*
-    if we want to later close out the modal once we checked 
-    to see if the user exists, we can do 
-    document.querySelector('.bg-modal').style.display = 'none';
-    */
 }
 
 // handles a submit event listener 
@@ -37,10 +28,7 @@ const submitLogin = (form) => {
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         let username = e.target[0].value
-
         checkUser(username);
-
-        // console.log(e.target[0].value)
     })
 }
 
@@ -50,7 +38,6 @@ const checkUser = (username) => {
     fetch(USERS_URL)
     .then(resp => resp.json())
     .then(users => {
-        console.log(users)
         let user = users.find(user => {
             return (user.name.toLowerCase() == username.toLowerCase()) 
     })
@@ -65,7 +52,6 @@ const checkUser = (username) => {
 })
 }
 
-
 // a form for creating a new User 
 const newUserForm = (username) => {
     let newUserModal = document.getElementById('new-user-modal')
@@ -75,7 +61,6 @@ const newUserForm = (username) => {
     newUserForm.addEventListener('submit', (e) => {
         e.preventDefault();
         let newUsername = newUserForm[0].value 
-        console.log(newUsername)
         // do a fetch request to post to users and create a new user. 
         fetchCreateUser(newUserForm);
         
@@ -100,8 +85,7 @@ const fetchCreateUser = (newUserForm) => {
     .then(resp => resp.json())
     .then(user => {
         // once a new user is created, clear out modal screens and take new user to first page.
-        let newUserModal = document.getElementById('new-user-modal');
-        newUserModal.style.display = 'none';
+        clearLoginModal();
         console.log(user)
         
         // showUser(user);
@@ -110,11 +94,14 @@ const fetchCreateUser = (newUserForm) => {
 
 // a function that clears the login modal to enter into application 
 const clearLoginModal = () => {
+    document.getElementById('new-user-modal').style.display = 'none';
+    document.getElementById('login-modal').style.display = 'none';
 
 }
 
 // A function that, once logged in, takes us into the application. 
 const showUser = (user) => {
+    
     
 }
 
