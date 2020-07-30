@@ -136,7 +136,7 @@ const showUser = (user) => {
     let main = document.getElementById('main')
 
     let workingSpace = document.getElementById("working-space") 
-    main.innerHTML = ''
+    main.removeChild(workingSpace)
     
     main.innerText = user.name
 
@@ -195,6 +195,8 @@ const petButtonLogo = (user) => {
 
 // Add a pet when a button is pressed 
 const addPetButtonHandler = (addPetButton, user) => {
+    
+    
     addPetButton.addEventListener('click', (e) => {
         e.preventDefault();
         newPetModal = document.getElementById("new-pet-modal")
@@ -210,9 +212,6 @@ const addPetButtonHandler = (addPetButton, user) => {
             fetchCreatePet(newPetForm, user);
 
         })
-
-
-
 
         document.querySelector('.close').addEventListener('click', () => {
             newPetModal = document.getElementById("new-pet-modal")
@@ -315,31 +314,44 @@ const fetchPets = () => {
 }
 
 const renderPet = (pet) => {
-    let workingSpace = document.getElementById("working-space")
-    workingSpace.innerHTML = ''
+    let mainPetPage = document.getElementById('main')
+    mainPetPage.innerHTML = ''
 
-    // create pet div card 
-    let petCard = document.createElement('div')
-    petCard.className = 'pet-page-card'
-    workingSpace.appendChild(petCard)
+    // pet picture top middle
 
-    // name
+    let petPicture = document.createElement('img')
+    petPicture.src = pet.pic_url
+    petPicture.id = 'pet-page-pet-pic'
+    mainPetPage.appendChild(petPicture)
+    
+    // pet name right under pet profile picture 
+
     let petName = document.createElement('div')
-    petName.innerText = `${pet.name} the ${pet.animal}`
-    petCard.appendChild(petName)
+    petName.innerText = `${pet.name} the ${pet.animal}` 
+    mainPetPage.appendChild(petName)
+    
+    let petDescription = document.createElement('div')
+    petDescription.id = 'pet-description'
+    petDescription.innerText = pet.description
+    mainPetPage.appendChild(petDescription)
 
-    // picture
-    let imgDiv = document.createElement('div')
-    let petPic = document.createElement('img')
-    petPic.id = 'pet-page-pic'
-    petPic.src = pet.pic_url
-    imgDiv.appendChild(petPic)
-    petCard.appendChild(imgDiv)
+    const petPosts = document.createElement('div')
+    mainPetPage.appendChild(petPosts)
 
-    // description 
-    let description = document.createElement('div')
-    description.innerText = pet.description 
-    petCard.appendChild(description)
+  
+    const postButton = document.createElement('img')
+    postButton.src = './images/plus-sign-svg.png'
+    postButton.id = 'add-post-button'
+    mainPetPage.appendChild(postButton);
+    postButtonHandler(postButton, pet);
 
+
+}
+
+const postButtonHandler = (postButton, pet) => {
+    postButton.addEventListener('click', () => {
+        console.log('clicked')
+        console.log(pet.name)
+    })
 }
 

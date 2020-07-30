@@ -183,3 +183,22 @@ img#add-pet-button {
     float: right;
 }
 
+img#add-post-button {
+    position: relative;
+    top: 0;
+    right: 14px; 
+    width: 50px;
+    height:50px;
+    cursor: pointer;
+    margin: 20px;
+}
+
+img#pet-page-pet-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+div#pet-description {
+    font-size: 15px;
+}
