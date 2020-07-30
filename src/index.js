@@ -336,6 +336,7 @@ const renderPet = (pet, user) => {
     mainPetPage.appendChild(petDescription)
 
     const petPosts = document.createElement('div')
+    petPosts.id = 'pet-posts'
     mainPetPage.appendChild(petPosts)
 
   
@@ -379,7 +380,11 @@ const submitEventHandler = (newPostForm, pet, user) => {
 
         body = {pic_url: newPicUrl, caption: newCaption, pet_id: petId, user_id: userId}
 
-        fetchCreatePost(pet, user, newPostForm);
+        fetchCreatePost(pet, user, newPostForm)
+
+
+        
+
 
     }, {once: true})
 
@@ -403,7 +408,34 @@ const fetchCreatePost = (pet, user, newPostForm) => {
     fetch(POSTS_URL, options)
     .then(resp => resp.json())
     .then(post => {
-        console.log(post)
+        // render the posts onto the div container
+        renderPost(post);
 
+        newPostForm = document.getElementById('new-post-modal');
+        newPostForm.style.display = 'none';
     })
+}
+
+
+const renderPost = (post) => {
+    console.log(post)
+    const petPosts = document.getElementById('pet-posts')
+
+    const postDiv = document.createElement('div')
+    postDiv.classList = 'post-div'
+    petPosts.appendChild(postDiv);
+
+    const postPic = document.createElement('img')
+    postPic.classList = 'post-img'
+    postPic.src = post.pic_url
+    postDiv.appendChild(postPic)
+
+    const postCaption = document.createElement('p')
+    postCaption.innerText = post.caption 
+    postCaption.id = 'post-caption'
+    postDiv.appendChild(postCaption)
+
+ 
+
+    
 }

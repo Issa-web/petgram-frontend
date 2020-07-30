@@ -217,3 +217,12 @@ img#pet-page-pet-pic {
 div#pet-description {
     font-size: 15px;
 }
+
+img#post-img {
+    width: 100px;
+    height: 100px;
+}
+
+#post-caption {
+    font-size 10px;
+}
