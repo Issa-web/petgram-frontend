@@ -503,5 +503,8 @@ const renderStuffForViewModal = (post) => {
     const viewPostImg = document.getElementById('view-post-img')
     viewPostImg.src = post.pic_url
 
+    const viewPostCaption = document.getElementById('view-post-caption')
+    viewPostCaption.innerText = post.caption
+
     // console.log(modalContent)
 }

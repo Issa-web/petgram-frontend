@@ -26,7 +26,7 @@ header {
     width: 70%;
     height: 100%;
     /* border: 3px solid green; */
-    padding: 100px;
+    padding: 55px;
     text-align: center;
     font-size: 25px;
     /* background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); */
@@ -284,7 +284,7 @@ div.post-div {
     width:  250px; 
     height: 250px;
     object-fit: cover;
-    opacity: 80%;
+    opacity: 85%;
  
 }
 
@@ -305,7 +305,7 @@ img.post-img {
 
 .right-half {
     background-color: #b6701e;
-    width: 40%;
+    width: 50%;
     float: right;
 }
 
