@@ -444,7 +444,7 @@ const renderPost = (post) => {
     // postCaption.id = 'post-caption'
     // postDiv.appendChild(postCaption)
 
-    viewPostHandler(postDiv);
+    viewPostHandler(postDiv, post);
 
     
 }
@@ -474,7 +474,7 @@ const fetchAllPosts = (pet) => {
 
 // handler that allows a post to show a modal window when clicked about the post. 
 
-const viewPostHandler = (postDiv) => {
+const viewPostHandler = (postDiv, post) => {
 
     postDiv.addEventListener('click', (e) => {
         e.preventDefault();
@@ -482,7 +482,7 @@ const viewPostHandler = (postDiv) => {
         viewPostModal.style.display = 'flex'
 
         // make seperate function that handle render on view post modal
-        renderStuffForViewModal(viewPostModal);
+        renderStuffForViewModal(post);
 
 
         let viewPostClose = document.getElementById('view-post-close')
@@ -498,8 +498,10 @@ const viewPostHandler = (postDiv) => {
     // show likes on the picture as well. 
 }
 
-const renderStuffForViewModal = () => {
+const renderStuffForViewModal = (post) => {
     const modalContent = document.getElementById('view-post-modal-content')
-    
+    const viewPostImg = document.getElementById('view-post-img')
+    viewPostImg.src = post.pic_url
+
     // console.log(modalContent)
 }

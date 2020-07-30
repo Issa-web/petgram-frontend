@@ -251,7 +251,7 @@ img#post-img {
 }
 
 #post-caption {
-    font-size 10px;
+    font-size: 10px;
 }
 
 
@@ -299,13 +299,18 @@ img.post-img {
 }
 
 .left-half {
-    background-color: #ff9e2c;
-    width: 40%;
+    width: 50%;
     float: left;
-  }
-  
-  .right-half {
+}
+
+.right-half {
     background-color: #b6701e;
     width: 40%;
     float: right;
-  }
+}
+
+img#view-post-img {
+    /* make img fill the div */
+    height: 250px;
+    width: 250px;
+}
