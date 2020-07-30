@@ -335,17 +335,24 @@ const renderPet = (pet, user) => {
     petDescription.innerText = pet.description
     mainPetPage.appendChild(petDescription)
 
-    const petPosts = document.createElement('div')
-    petPosts.id = 'pet-posts'
-    mainPetPage.appendChild(petPosts)
-
-  
     const postButton = document.createElement('img')
     postButton.src = './images/plus-sign-svg.png'
     postButton.id = 'add-post-button'
     mainPetPage.appendChild(postButton);
     postButtonHandler(postButton, pet, user);
 
+
+    const petPosts = document.createElement('div')
+    petPosts.id = 'pet-posts'
+    // on first load, render all posts of the pet that exists 
+    mainPetPage.appendChild(petPosts)
+    renderPostsHandler(pet);
+
+    // 
+
+    
+  
+    
 
 }
 
@@ -418,7 +425,6 @@ const fetchCreatePost = (pet, user, newPostForm) => {
 
 
 const renderPost = (post) => {
-    console.log(post)
     const petPosts = document.getElementById('pet-posts')
 
     const postDiv = document.createElement('div')
@@ -430,12 +436,70 @@ const renderPost = (post) => {
     postPic.src = post.pic_url
     postDiv.appendChild(postPic)
 
-    const postCaption = document.createElement('p')
-    postCaption.innerText = post.caption 
-    postCaption.id = 'post-caption'
-    postDiv.appendChild(postCaption)
 
- 
+    // when the modal window pops up, we can view the caption there.
+
+    // const postCaption = document.createElement('p')
+    // postCaption.innerText = post.caption 
+    // postCaption.id = 'post-caption'
+    // postDiv.appendChild(postCaption)
+
+    viewPostHandler(postDiv);
 
     
+}
+
+const renderPostsHandler = (pet) => {
+    // do a fetch request that gets all posts, we have the pet.id, use that pet.id to match to the posts with the same
+    // pet.id
+
+    fetchAllPosts(pet);
+}
+
+const fetchAllPosts = (pet) => {
+
+    fetch(POSTS_URL)
+    .then(resp => resp.json())
+    .then(posts => {
+
+        posts.forEach(post => {
+            if (pet.id == post.pet_id){
+                renderPost(post);
+            }
+        })
+    })
+
+}
+
+
+// handler that allows a post to show a modal window when clicked about the post. 
+
+const viewPostHandler = (postDiv) => {
+
+    postDiv.addEventListener('click', (e) => {
+        e.preventDefault();
+        const viewPostModal = document.getElementById('view-post-modal')
+        viewPostModal.style.display = 'flex'
+
+        // make seperate function that handle render on view post modal
+        renderStuffForViewModal(viewPostModal);
+
+
+        let viewPostClose = document.getElementById('view-post-close')
+        viewPostClose.addEventListener('click', () => {
+            viewPostModal.style.display = 'none'
+        })
+
+
+    })
+
+    // grab the modal window. Show the modal window. show the picture on the left
+    //  show the caption on the top right. have a captions section below the caption 
+    // show likes on the picture as well. 
+}
+
+const renderStuffForViewModal = () => {
+    const modalContent = document.getElementById('view-post-modal-content')
+    
+    // console.log(modalContent)
 }
