@@ -1,14 +1,14 @@
 BASE_URL = 'http://localhost:3000/'
-
 USERS_URL = BASE_URL + 'users'
-
 PETS_URL = BASE_URL + 'pets'
+USER_PETS_URL = BASE_URL + 'user_pets'
+
+window.allUsers = 'All the users'
 
 
 document.addEventListener("DOMContentLoaded", () => {
     // when user goes to link, page loads and sees login modal. 
     loginModal();
-
     // renderPets(); 
 });
 
@@ -49,6 +49,7 @@ const checkUser = (username) => {
     fetch(USERS_URL)
     .then(resp => resp.json())
     .then(users => {
+        window.allUsers = users
         let user = users.find(user => {
             return (user.name.toLowerCase() == username.toLowerCase()) 
     })
@@ -58,7 +59,8 @@ const checkUser = (username) => {
     } else {
         console.log('User found!')
         clearLoginModal();
-        showUser(user)
+        showUser(user);
+
     }
 })
 }
@@ -134,14 +136,11 @@ const showUser = (user) => {
     let main = document.getElementById('main')
 
     let workingSpace = document.getElementById("working-space") 
-    
     main.innerHTML = ''
+    
     main.innerText = user.name
-    const addPetButton = document.createElement('img')
-    addPetButton.src = './images/plus-sign-svg.png'
-    addPetButton.id = 'add-pet-button'
-    main.appendChild(addPetButton)
-    addPetButtonHandler(addPetButton, user);
+
+    petButtonLogo(user);
 
 
     workingSpace.innerHTML = '';
@@ -184,9 +183,20 @@ const showUser = (user) => {
 
 }
 
+// Seperate out the addPetButton from the showUser Function 
+const petButtonLogo = (user) => {
+    let main = document.getElementById('main')
+    const addPetButton = document.createElement('img')
+    addPetButton.src = './images/plus-sign-svg.png'
+    addPetButton.id = 'add-pet-button'
+    main.appendChild(addPetButton)
+    addPetButtonHandler(addPetButton, user);
+}
+
 // Add a pet when a button is pressed 
 const addPetButtonHandler = (addPetButton, user) => {
-    addPetButton.addEventListener('click', () => {
+    addPetButton.addEventListener('click', (e) => {
+        e.preventDefault();
         newPetModal = document.getElementById("new-pet-modal")
         newPetModal.style.display = 'flex';
         newPetForm = document.getElementById('new-pet');
@@ -232,13 +242,8 @@ const fetchCreatePet = (newPetForm, user) => {
     fetch(PETS_URL, options)
     .then(resp => resp.json())
     .then(pet => {
-        // once a new pet is created, clear out modal and take user to pet page.
-
         // create the userPet relationship once a pet is created.
         fetchCreateUserPet(pet, user)
-        
-        newPetModal = document.getElementById("new-pet-modal")
-        newPetModal.style.display = 'none';
     })
 
 }
@@ -246,9 +251,48 @@ const fetchCreatePet = (newPetForm, user) => {
 // Create UserPet relationship 
 
 const fetchCreateUserPet = (pet, user) => {
-    console.log(pet.name)
-    console.log(user.name)
+    options = {
+        method: "POST",
+        headers: {
+            "content-type": "application/json",
+            "accept": "application/json"
+        },
+        body: JSON.stringify({
+            pet_id: pet.id, 
+            user_id: user.id
+        })
+    }
+
+    fetch( USER_PETS_URL, options)
+    .then(resp => resp.json())
+    .then(userPet => {
+    // once a new pet is created, clear out modal and take user to pet page.
+        newPetModal = document.getElementById("new-pet-modal")
+        newPetModal.style.display = 'none';
+    // Once modal is cleared out, render profile page. 
+    // we first have to fetch AGAIN all the users, to update ALL users with
+    // the updated userpet relationship. 
+    updateAllUsers(userPet, user);
+    })
 }
+
+// updates all users
+const updateAllUsers = (userPet, user) => {
+    fetch(USERS_URL)
+    .then(resp => resp.json())
+    .then(users => {
+        users.find(user => {
+            if(user.id == userPet.user_id) {
+                // its showing double of the pets after each add
+                showUser(user)
+                // petButtonLogo(user)
+            }
+        
+    
+        })
+    })
+}
+
 
 // Render Pets 
 const renderPets = () => {
