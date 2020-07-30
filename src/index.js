@@ -177,7 +177,8 @@ const showUser = (user) => {
 
         petCard.addEventListener('click', (e) => {
             // once the pet is clicked, render that pets page
-            renderPet(pet);
+           
+            renderPet(pet, user);
         })
     })
 
@@ -214,7 +215,7 @@ const addPetButtonHandler = (addPetButton, user) => {
         })
 
         document.querySelector('.close').addEventListener('click', () => {
-            newPetModal = document.getElementById("new-pet-modal")
+            const newPetModal = document.getElementById("new-pet-modal")
             newPetModal.style.display = 'none';
         })
     })
@@ -313,7 +314,7 @@ const fetchPets = () => {
     })
 }
 
-const renderPet = (pet) => {
+const renderPet = (pet, user) => {
     let mainPetPage = document.getElementById('main')
     mainPetPage.innerHTML = ''
 
@@ -343,15 +344,30 @@ const renderPet = (pet) => {
     postButton.src = './images/plus-sign-svg.png'
     postButton.id = 'add-post-button'
     mainPetPage.appendChild(postButton);
-    postButtonHandler(postButton, pet);
+    postButtonHandler(postButton, pet, user);
 
 
 }
 
-const postButtonHandler = (postButton, pet) => {
-    postButton.addEventListener('click', () => {
-        console.log('clicked')
-        console.log(pet.name)
+const postButtonHandler = (postButton, pet, user) => {
+    postButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        const newPostModal = document.getElementById("new-post-modal")
+        newPostModal.style.display = 'flex';
+        newPostForm = document.getElementById('new-post');
+
+        newPostForm.addEventListener('submit', (e) => {
+            e.preventDefault()
+            console.log(pet.id)
+            console.log(user)
+        })
+
+
+        const closeButton = document.getElementById('post-close')
+        closeButton.addEventListener('click', () => {
+            newPostModal.style.display = 'none';
+        })
+
     })
 }
 
