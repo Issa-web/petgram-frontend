@@ -27,14 +27,17 @@ header {
     height: 70%;
     border: 3px solid green;
     padding: 100px;
-    background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%)
+    text-align: center;
+    font-size: 25px;
+    background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+    
 }
 
 div#working-space {
     border: 3px solid green;
     width: 100%;
-    margin: 10px;
-    padding: 10px;
+    margin: auto;
+    padding: 20px;
 }
 
 
@@ -89,6 +92,21 @@ div#working-space {
     display: none;
 }
 
+#new-pet-modal {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.70);
+    /* background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); */
+
+    position: absolute;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: none;
+
+}
+
 
 .modal-contents {
     width: 500px;
@@ -97,8 +115,17 @@ div#working-space {
     border-radius: 4px;
     text-align: center;
     padding: 20px;
-
+    position: relative;
     border-radius: 5%;
+}
+
+.close {
+    position: absolute;
+    top: 0;
+    right: 14px; 
+    font-size: 42px; 
+    transform: rotate(45deg);
+    cursor: pointer;
 }
 
 input {
@@ -118,6 +145,7 @@ div#pet-title {
     display: flex;
     flex-wrap: wrap;
     padding-left: 0;
+    justify-content: space-evenly;
 
 
     color: red;
@@ -128,22 +156,14 @@ div#pet-title {
 div.pet-card {
 /* adds flex style to each card( 3 per row) */
     list-style: none;
-    flex: 0 0 33.333333%;
-
-    /* margin: auto;
-    border-style: solid;
-    padding: 20px;  
-    width: 35%;
-    height: 55%; */
-
-    /* make each pet card a clickable circle */
+    /* flex: 0 0 33.333333%; */
     position: relative;
-    width: 150x; 
-    height:200px; 
     overflow: hidden; 
-    border-radius: 50%;
-    margin-left: -70px;
 
+    float: left;
+    width:  250px; 
+    height: 250px;
+    object-fit: cover;
     opacity: 80%;
 }
 
@@ -152,6 +172,14 @@ div.pet-card:hover {
 }
 
 img.pet-pic {
-    width: 100%;
-    height: auto;
+    width: 250px;
+    height: 250px;
+    padding: 10px
 }
+
+img#add-pet-button {
+    width: 50px;
+    height: 50px;
+    float: right;
+}
+

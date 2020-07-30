@@ -12,7 +12,7 @@
 <body>
     <header id='title'>Petgram</header>
 
-    <div id='sidebar'>Sidebar
+    <div id='sidebar'>
         <a href="#">Profile</a>
         <a href="#">Feed</a>
         <a href="#">Explore</a>
@@ -22,13 +22,6 @@
     <div id='main'>
 
         <div id='working-space'>
-
-            Main
-    
-            <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p>
-            <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p>
-            
-
         </div>
         
     </div>
@@ -60,6 +53,22 @@
                 <input type='submit' class='form-submit-button'>
             </form>
             <button id='back-to-login' class='button'>Back to login</button>
+        </div>
+    </div>
+
+    <!-- new pet modal -->
+
+    <div id='new-pet-modal' class="new-pet-modal">
+        <div class="modal-contents">
+            <div class="close">+</div>
+            <span id='add-a-pet-title'>Add a pet!</span>
+            <form id='new-pet'>
+                <input type='text' name='name' placeholder="Pet Name">
+                <input type='text' name='pic_url' placeholder="Picture URl">
+                <input type='text' name='description' placeholder="Description">
+                <input type='text' name='animal' placeholder="Type of Animal">
+                <input type="submit" class='form-submit-button'>
+            </form>
         </div>
     </div>
 

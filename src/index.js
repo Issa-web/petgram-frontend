@@ -117,11 +117,7 @@ const fetchCreateUser = (newUserForm) => {
     .then(resp => resp.json())
     .then(user => {
         // once a new user is created, clear out modal screens and take new user to first page.
-
-        
         clearLoginModal();
-        console.log(user)
-        
         showUser(user);
     })
 }
@@ -135,26 +131,39 @@ const clearLoginModal = () => {
 
 // A function that, once logged in, takes us into the application. 
 const showUser = (user) => {
+    let main = document.getElementById('main')
+
     let workingSpace = document.getElementById("working-space") 
+    
+    main.innerHTML = ''
+    main.innerText = user.name
+    const addPetButton = document.createElement('img')
+    addPetButton.src = './images/plus-sign-svg.png'
+    addPetButton.id = 'add-pet-button'
+    main.appendChild(addPetButton)
+    addPetButtonHandler(addPetButton, user);
+
+
     workingSpace.innerHTML = '';
+    main.appendChild(workingSpace)
     const profileDiv = document.createElement('div')
     profileDiv.id = 'profile-div'
     workingSpace.appendChild(profileDiv);
 
     const profileName = document.createElement('div')
     profileName.id = 'profile-name'
-    profileName.innerText = user.name
-    profileDiv.appendChild(profileName)
+    profileName.innerText = `${user.name}'s pets`
+    profileDiv.appendChild(profileName) 
 
     const petTitle = document.createElement('div')
     petTitle.id = 'pet-title'
-    petTitle.innerText = "All pets"
+    // petTitle.innerHTML = "<button id='add-pet-button'>Add Pet</button>"
     profileDiv.appendChild(petTitle)
 
     // iterate through all pets and 
     // display the picture of the pet under the pet title div.
-    user.pets.forEach(pet => {
 
+    user.pets.forEach((pet) => {       
         const petCard = document.createElement('div')
         petCard.classList = 'pet-card'
         petTitle.appendChild(petCard)
@@ -168,8 +177,6 @@ const showUser = (user) => {
         // to the pet view page
 
         petCard.addEventListener('click', (e) => {
-            console.log('you clicked this pet!')
-            console.log(pet)
             // once the pet is clicked, render that pets page
             renderPet(pet);
         })
@@ -177,7 +184,71 @@ const showUser = (user) => {
 
 }
 
+// Add a pet when a button is pressed 
+const addPetButtonHandler = (addPetButton, user) => {
+    addPetButton.addEventListener('click', () => {
+        newPetModal = document.getElementById("new-pet-modal")
+        newPetModal.style.display = 'flex';
+        newPetForm = document.getElementById('new-pet');
+        newPetForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            let newPetName = newPetForm[0].value;
+            let newPicUrl = newPetForm[1].value;
+            let newDescription = newPetForm[2].value;
+            let newAnimal = newPetForm[3].value;
 
+            fetchCreatePet(newPetForm, user);
+
+        })
+
+
+
+
+        document.querySelector('.close').addEventListener('click', () => {
+            newPetModal = document.getElementById("new-pet-modal")
+            newPetModal.style.display = 'none';
+        })
+    })
+
+    
+}
+
+// Create a new pet 
+const fetchCreatePet = (newPetForm, user) => {
+    options = {
+        method: "POST",
+        headers: {
+            "content-type": "application/json",
+            "accept": "application/json"
+        },
+        body: JSON.stringify({
+            name: newPetForm[0].value,
+            pic_url: newPetForm[1].value,
+            description: newPetForm[2].value,
+            animal: newPetForm[3].value
+        })
+    }
+
+    fetch(PETS_URL, options)
+    .then(resp => resp.json())
+    .then(pet => {
+        // once a new pet is created, clear out modal and take user to pet page.
+
+        // create the userPet relationship once a pet is created.
+        fetchCreateUserPet(pet, user)
+        
+        newPetModal = document.getElementById("new-pet-modal")
+        newPetModal.style.display = 'none';
+    })
+
+}
+
+// Create UserPet relationship 
+
+const fetchCreateUserPet = (pet, user) => {
+    console.log(pet.name)
+    console.log(user.name)
+}
 
 // Render Pets 
 const renderPets = () => {
@@ -187,7 +258,6 @@ const renderPets = () => {
 
     fetchPets();
 }
-
 
 const fetchPets = () => {
     fetch(PETS_URL)
@@ -208,7 +278,6 @@ const renderPet = (pet) => {
     let petCard = document.createElement('div')
     petCard.className = 'pet-page-card'
     workingSpace.appendChild(petCard)
-
 
     // name
     let petName = document.createElement('div')
