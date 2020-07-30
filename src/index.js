@@ -2,6 +2,7 @@ BASE_URL = 'http://localhost:3000/'
 USERS_URL = BASE_URL + 'users'
 PETS_URL = BASE_URL + 'pets'
 USER_PETS_URL = BASE_URL + 'user_pets'
+POSTS_URL = BASE_URL + 'posts'
 
 window.allUsers = 'All the users'
 
@@ -177,7 +178,6 @@ const showUser = (user) => {
 
         petCard.addEventListener('click', (e) => {
             // once the pet is clicked, render that pets page
-           
             renderPet(pet, user);
         })
     })
@@ -212,7 +212,7 @@ const addPetButtonHandler = (addPetButton, user) => {
 
             fetchCreatePet(newPetForm, user);
 
-        })
+        }, {once: true})
 
         document.querySelector('.close').addEventListener('click', () => {
             const newPetModal = document.getElementById("new-pet-modal")
@@ -307,7 +307,6 @@ const fetchPets = () => {
     fetch(PETS_URL)
     .then(resp => resp.json())
     .then(pets => {
-        console.log(pets)
         pets.forEach(pet => {
             renderPet(pet);
         })
@@ -356,12 +355,8 @@ const postButtonHandler = (postButton, pet, user) => {
         newPostModal.style.display = 'flex';
         newPostForm = document.getElementById('new-post');
 
-        newPostForm.addEventListener('submit', (e) => {
-            e.preventDefault()
-            console.log(pet.id)
-            console.log(user)
-        })
 
+        submitEventHandler(newPostForm, pet, user);
 
         const closeButton = document.getElementById('post-close')
         closeButton.addEventListener('click', () => {
@@ -371,3 +366,44 @@ const postButtonHandler = (postButton, pet, user) => {
     })
 }
 
+
+const submitEventHandler = (newPostForm, pet, user) => {
+
+    newPostForm.addEventListener('submit', (e) => {
+        e.preventDefault()
+
+        let newPicUrl = newPostForm[0].value;
+        let newCaption = newPostForm[1].value;
+        let petId = pet.id;
+        let userId = user.id;
+
+        body = {pic_url: newPicUrl, caption: newCaption, pet_id: petId, user_id: userId}
+
+        fetchCreatePost(pet, user, newPostForm);
+
+    }, {once: true})
+
+}
+
+const fetchCreatePost = (pet, user, newPostForm) => {
+    options = {
+        method: "POST",
+        headers: {
+            "content-type": "application/json",
+            "accept": "application/json"
+        },
+        body: JSON.stringify({
+            pic_url: newPostForm[0].value,
+            caption: newPostForm[1].value,
+            pet_id: pet.id,
+            user_id: user.id
+        })
+    }
+
+    fetch(POSTS_URL, options)
+    .then(resp => resp.json())
+    .then(post => {
+        console.log(post)
+
+    })
+}
