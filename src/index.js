@@ -579,24 +579,31 @@ const renderCommentToModal = (comment) => {
     // find the user name from comment 
     const userId = comment.user_id
     const commentsContainer = document.getElementById('comments-container')
-    
-    window.allUsers.forEach(user => {
-        if (user.id == comment.user_id){
-            let userNameOfComment = user.name
-            
-            const userComment = document.createElement('div')
-            userComment.classList = 'user-comment'
-            userComment.id = `${comment.id}`
-            userComment.innerHTML = `<span id='user-name-of-comment'>${userNameOfComment}</span>: ${comment.comment} <span id='comment-${comment.id}' class='delete-comment'>X</span> `
-            commentsContainer.appendChild(userComment)
 
-            const deleteCommentSpan = document.getElementById(`comment-${comment.id}`)
-            deleteCommentSpan.addEventListener('click', ()=> {
-                // once we clicked the specific comments delete button, we send a fetch to destroy! 
-                deleteComment(comment, userComment);
-            })
-        }
+    fetch(USERS_URL)
+    .then(resp => resp.json())
+    .then(allUsers => {
+
+        allUsers.forEach( user => {
+            if (user.id == comment.user_id){
+                let userNameOfComment = user.name
+                
+                const userComment = document.createElement('div')
+                userComment.classList = 'user-comment'
+                userComment.id = `${comment.id}`
+                userComment.innerHTML = `<span id='user-name-of-comment'>${userNameOfComment}</span>: ${comment.comment} <span id='comment-${comment.id}' class='delete-comment'>X</span> `
+                commentsContainer.appendChild(userComment)
+    
+                const deleteCommentSpan = document.getElementById(`comment-${comment.id}`)
+                deleteCommentSpan.addEventListener('click', ()=> {
+                    // once we clicked the specific comments delete button, we send a fetch to destroy! 
+                    deleteComment(comment, userComment);
+                })
+            }
+        })
+
     })
+    
 
 }
 
@@ -687,8 +694,6 @@ const createLike = (post, user) => {
                 }
             })
         })
-
-        // renderLikeToModal(thisPost);
     })
 }
 
@@ -717,8 +722,6 @@ const renderLikeToModal = (post) => {
         likeCount.innerText = `liked by ${post.likes.length} people`
     }
     
-
-
     // check if like exists in database, if it exists, turn the glyph "off" by fetch deleting the like
     // if it doesn't exist, create an instance of like. 
 
@@ -743,20 +746,19 @@ const checkIfUserLiked = (user, post) => {
         let userLike = allLikesForCheck.find(like => {
             return (like.user_id == user.id && like.post_id == post.id)
         })
-     
+
         if (userLike == undefined){
             // createLike
             createLike(post, user);
         } else {
             // if like has been LIKED by the user, delete the like
-            console.log("USER HAS LIKED THIS BEFORE, LETS DESTROY IT")
+            deleteLike(userLike, post);
         }
 
     })
 
 
 }
-
 
 const showPreviousLikes = (user, post) => {
     // fetch request all likes, find all the likes that match the clicked post id and display those 
@@ -772,9 +774,19 @@ const showPreviousLikes = (user, post) => {
     })
 }
 
-const deleteLike = (like) => {
+const deleteLike = (like, post) => {
 
     // delete fetch and rerender the modal with the updated like number
+    fetch((LIKES_URL + like.id), { method: 'delete'})
+    .then( resp => resp.json())
+    .then( deletedLike => {
+        if (deletedLike.errors){
+            makesAlerts( deletedLike.errors)
+        } else {
+            // re-render the like modal page to show updated like count 
+            renderLikeToModal(post)
+        }
+    })
 
 }
 
