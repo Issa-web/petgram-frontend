@@ -313,7 +313,7 @@ img.post-img {
 }
 
 .right-half {
-    background-color: #b6701e;
+    
     width: 50%;
     float: right;
     max-height: 100%;
@@ -324,4 +324,13 @@ img#view-post-img {
     /* make img fill the div */
     height: 250px;
     width: 250px;
+}
+
+#view-post-caption {
+    padding: 25px;
+}
+
+.delete-comment {
+    font-size: 15px; 
+    cursor: pointer;
 }

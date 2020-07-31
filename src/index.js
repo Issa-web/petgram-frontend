@@ -564,8 +564,14 @@ const renderCommentToModal = (comment) => {
             
             const userComment = document.createElement('div')
             userComment.classList = 'user-comment'
-            userComment.innerHTML = `<span id='user-name-of-comment'>${userNameOfComment}</span>: ${comment.comment} <span id='delete-comment'>X</span> `
+            userComment.innerHTML = `<span id='user-name-of-comment'>${userNameOfComment}</span>: ${comment.comment} <span id='comment-${comment.id}' class='delete-comment'>X</span> `
             commentsContainer.appendChild(userComment)
+
+            const deleteCommentSpan = document.getElementById(`comment-${comment.id}`)
+            deleteCommentSpan.addEventListener('click', ()=> {
+                // once we clicked the specific comments delete button, we send a fetch to destroy! 
+                deleteComment(deleteCommentSpan, comment);
+            })
         }
     })
 
@@ -582,4 +588,10 @@ const showPreviousComments = (post) => {
             }
         })
     })
+}
+
+
+const deleteComment = (deleteCommentSpan, comment) => {
+    console.log(deleteCommentSpan)
+    console.log(`${comment.id} was clicked!`)
 }
