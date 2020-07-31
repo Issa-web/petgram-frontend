@@ -3,7 +3,7 @@ USERS_URL = BASE_URL + 'users'
 PETS_URL = BASE_URL + 'pets'
 USER_PETS_URL = BASE_URL + 'user_pets'
 POSTS_URL = BASE_URL + 'posts'
-COMMENTS_URL = BASE_URL + 'comments'
+COMMENTS_URL = BASE_URL + 'comments/'
 
 window.allUsers = 'All the users'
 
@@ -564,13 +564,14 @@ const renderCommentToModal = (comment) => {
             
             const userComment = document.createElement('div')
             userComment.classList = 'user-comment'
+            userComment.id = `${comment.id}`
             userComment.innerHTML = `<span id='user-name-of-comment'>${userNameOfComment}</span>: ${comment.comment} <span id='comment-${comment.id}' class='delete-comment'>X</span> `
             commentsContainer.appendChild(userComment)
 
             const deleteCommentSpan = document.getElementById(`comment-${comment.id}`)
             deleteCommentSpan.addEventListener('click', ()=> {
                 // once we clicked the specific comments delete button, we send a fetch to destroy! 
-                deleteComment(deleteCommentSpan, comment);
+                deleteComment(deleteCommentSpan, comment, userComment);
             })
         }
     })
@@ -591,7 +592,27 @@ const showPreviousComments = (post) => {
 }
 
 
-const deleteComment = (deleteCommentSpan, comment) => {
+const deleteComment = (deleteCommentSpan, comment, userComment) => {
     console.log(deleteCommentSpan)
     console.log(`${comment.id} was clicked!`)
+
+    // when we fetch, we have to fetch by the commentsurl/id 
+    fetch((COMMENTS_URL + comment.id), { method: 'delete'})
+    .then( resp => resp.json())
+    .then( deletedComment => {
+
+        if (deletedComment.errors){
+            makesAlerts( deletedComment.errors)
+        } else {
+            // remove the front end comment
+            userComment.remove();
+            console.log( deletedComment.messages )
+            
+        }
+    })
+
+}
+
+function makesAlerts( messages ) {
+    messages.forEach( message => alert(message) )
 }
