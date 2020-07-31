@@ -513,23 +513,25 @@ const renderStuffForViewModal = (post, user) => {
 
     const viewPostCaption = document.getElementById('view-post-caption')
     viewPostCaption.innerText = post.caption
-
-
     let totalLikeCount = [];
 
-    // also want to show all previous comments for this certain user out. 
+    const articleHearts = document.querySelector(".like-glyph");
+    const likeCount = document.getElementById('like-count')
+
+    let heart = articleHearts; 
+    heart.innerText = "♡";
+    heart.style.color = 'black';
+    likeCount.innerText = 'No one likes this yet!';
+
+
+    showPreviousLikes(user, post, totalLikeCount);
+
     showPreviousComments(post);
 
-    // commenthandler 
-
-    showPreviousLikes(post, totalLikeCount);
 
     likeHandler(post, user, totalLikeCount);
 
-
     viewCommentHandler(post, user);
-
-    checkIfUserLiked(user, post)
 
 }
 
@@ -644,15 +646,12 @@ const likeHandler = (post, user, totalLikeCount) => {
 
     postImg.addEventListener('dblclick', (e) => {
         console.log('I have been double clicked!')
-        // const articleHearts = document.querySelector(".like-glyph");
-        // let heart = articleHearts; 
-        createLike(post, user, totalLikeCount);
+        checkIfUserLiked(user, post, totalLikeCount);
     })
 
   
     articleHearts.addEventListener('click', (e) => {
-
-        createLike(post, user, totalLikeCount);
+        checkIfUserLiked(user, post, totalLikeCount);
     })
 }
 
@@ -692,13 +691,11 @@ const renderLikeToModal = (like, totalLikeCount) => {
     let heart = articleHearts; 
     heart.innerText = '';
     likeCount.innerText = 'No one likes this yet!';
-    // heart.innerText = glyphStates[heart.innerText];
-    // heart.style.color = colorStates[heart.style.color];
+
 
     if (totalLikeCount.length === 0){
         heart.innerText = "♡"
         heart.style.color = 'black';
-        likeCount.innerText = 'No one likes this yet!'
     } else if (totalLikeCount.length === 1) {
         heart.innerText = "♥"
         heart.style.color = 'red';
@@ -716,59 +713,42 @@ const renderLikeToModal = (like, totalLikeCount) => {
 
 }
 
-const checkIfUserLiked = (user, post) => {
+const checkIfUserLiked = (user, post, totalLikeCount) => {
     // if the user had already liked the post, if they click the post again to like, it will delete the like 
-
     //  if the user had not liked the post, it will create a like. 
-
     // First we will need to fetch ALL likes, then go through all the likes that having a matching user_id with user.id
+    // AND have the like.post_id match the POST.id. 
 
-    console.log(user)
-    console.log(post)
+    let allLikesForCheck = [];
 
     fetch(LIKES_URL)
     .then(resp => resp.json())
     .then(allLikes => {
         allLikes.forEach(like => {
-            let userLike = allLikes.find(like => {
-                return (like.user_id == user.id && like.post_id == post.id)
-            })
-            if (userLike == undefined){
-                // createLike
-                console.log('NO LIKE FOUND, CREATE ONE')
-            } else {
-                // if like has been LIKED by the user, delete the like
-                console.log("USER HAS LIKED THIS BEFORE, LETS DESTROY IT")
-            }
+
+            allLikesForCheck.push(like)
         })
+
+        let userLike = allLikesForCheck.find(like => {
+            return (like.user_id == user.id && like.post_id == post.id)
+        })
+     
+        if (userLike == undefined){
+            // createLike
+            createLike(post, user, totalLikeCount);
+        } else {
+            // if like has been LIKED by the user, delete the like
+            alert("USER HAS LIKED THIS BEFORE, LETS DESTROY IT")
+            console.log("USER HAS LIKED THIS BEFORE, LETS DESTROY IT")
+        }
+
     })
+
+
 }
 
 
-// check if username exists within database < use this as a template
-
-// const checkUser = (username) => {
-//     fetch(USERS_URL)
-//     .then(resp => resp.json())
-//     .then(users => {
-//         window.allUsers = users
-//         let user = users.find(user => {
-//             return (user.name.toLowerCase() == username.toLowerCase()) 
-//     })
-//     if (user == undefined){
-//         console.log("No user found! Please create a new user.")
-//         newUserFormModal()
-//     } else {
-//         console.log('User found!')
-//         clearLoginModal();
-//         showUser(user);
-
-//     }
-// })
-// }
-
-
-const showPreviousLikes = (post, totalLikeCount) => {
+const showPreviousLikes = (user, post, totalLikeCount) => {
     // fetch request all likes, find all the likes that match the clicked post id and display those 
     fetch(LIKES_URL)
     .then(resp => resp.json())
@@ -777,6 +757,7 @@ const showPreviousLikes = (post, totalLikeCount) => {
             if(like.post_id == post.id){
                 totalLikeCount.push(like)
                 renderLikeToModal(like, totalLikeCount);
+
             } 
         })
     })
