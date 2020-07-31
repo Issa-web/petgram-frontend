@@ -1,9 +1,10 @@
 BASE_URL = 'http://localhost:3000/'
 USERS_URL = BASE_URL + 'users'
-PETS_URL = BASE_URL + 'pets'
+PETS_URL = BASE_URL + 'pets/'
 USER_PETS_URL = BASE_URL + 'user_pets'
-POSTS_URL = BASE_URL + 'posts'
+POSTS_URL = BASE_URL + 'posts/'
 COMMENTS_URL = BASE_URL + 'comments/'
+LIKES_URL = BASE_URL + 'likes/'
 
 window.allUsers = 'All the users'
 
@@ -513,12 +514,17 @@ const renderStuffForViewModal = (post, user) => {
     const viewPostCaption = document.getElementById('view-post-caption')
     viewPostCaption.innerText = post.caption
 
+
+    let totalLikeCount = [];
+
     // also want to show all previous comments for this certain user out. 
     showPreviousComments(post);
 
     // commenthandler 
 
-    likeHandler(post);
+    showPreviousLikes(post, totalLikeCount);
+
+    likeHandler(post, user, totalLikeCount);
 
 
     viewCommentHandler(post, user);
@@ -630,23 +636,124 @@ function makesAlerts( messages ) {
 }
 
 
-const likeHandler = (post) => {
+const likeHandler = (post, user, totalLikeCount) => {
     const articleHearts = document.querySelector(".like-glyph");
     const postImg = document.getElementById('view-post-img');
 
     postImg.addEventListener('dblclick', (e) => {
         console.log('I have been double clicked!')
-        const articleHearts = document.querySelector(".like-glyph");
-        let heart = articleHearts; 
-        heart.innerText = glyphStates[heart.innerText];
-        heart.style.color = colorStates[heart.style.color];
+        // const articleHearts = document.querySelector(".like-glyph");
+        // let heart = articleHearts; 
+        createLike(post, user, totalLikeCount);
     })
 
   
     articleHearts.addEventListener('click', (e) => {
-        let heart = e.target; 
-        heart.innerText = glyphStates[heart.innerText];
-        heart.style.color = colorStates[heart.style.color];
-        console.log(heart)
+
+        createLike(post, user, totalLikeCount);
+    })
+}
+
+// when a like button or double click happens, CREATE a like object, when clicked again, delete
+
+const createLike = (post, user, totalLikeCount) => {
+    const heartLike = document.querySelector(".like-glyph").innerText
+
+    options = {
+        method: "POST",
+        headers: {
+            "content-type": "application/json",
+            "accept": "application/json"
+        },
+        body: JSON.stringify({
+            like: heartLike,
+            user_id: user.id,
+            post_id: post.id
+        })
+    }
+
+    fetch(LIKES_URL, options)
+    .then(resp => resp.json())
+    .then(like => {
+        console.log(like)
+        totalLikeCount.push(like)
+        renderLikeToModal(like, totalLikeCount);
+    })
+}
+
+
+
+const renderLikeToModal = (like, totalLikeCount) => {
+
+    const articleHearts = document.querySelector(".like-glyph");
+    const likeCount = document.getElementById('like-count')
+
+    let heart = articleHearts; 
+    heart.innerText = '';
+    likeCount.innerText = 'No one likes this yet!';
+    // heart.innerText = glyphStates[heart.innerText];
+    // heart.style.color = colorStates[heart.style.color];
+
+    if (totalLikeCount.length === 0){
+        heart.innerText = "♡"
+        heart.style.color = 'black';
+        likeCount.innerText = 'No one likes this yet!'
+    } else if (totalLikeCount.length === 1) {
+        heart.innerText = "♥"
+        heart.style.color = 'red';
+        likeCount.innerText = `liked by ${totalLikeCount.length} person`
+    } else {
+        heart.innerText = "♥"
+        heart.style.color = 'red';
+        likeCount.innerText = `liked by ${totalLikeCount.length} people`
+    }
+    
+
+
+    // check if like exists in database, if it exists, turn the glyph "off" by fetch deleting the like
+    // if it doesn't exist, create an instance of like. 
+
+}
+
+
+// check if username exists within database < use this as a template
+
+// const checkUser = (username) => {
+//     fetch(USERS_URL)
+//     .then(resp => resp.json())
+//     .then(users => {
+//         window.allUsers = users
+//         let user = users.find(user => {
+//             return (user.name.toLowerCase() == username.toLowerCase()) 
+//     })
+//     if (user == undefined){
+//         console.log("No user found! Please create a new user.")
+//         newUserFormModal()
+//     } else {
+//         console.log('User found!')
+//         clearLoginModal();
+//         showUser(user);
+
+//     }
+// })
+// }
+
+
+const showPreviousLikes = (post, totalLikeCount) => {
+    // fetch request all likes, find all the likes that match the clicked post id and display those 
+    fetch(LIKES_URL)
+    .then(resp => resp.json())
+    .then(allLikes => {
+        allLikes.forEach(like => {
+            // let totalLikeCount = [];
+
+            console.log(like.post_id)
+            console.log(post.id)
+
+            if(like.post_id == post.id){
+                totalLikeCount.push(like)
+                renderLikeToModal(like, totalLikeCount);
+            } 
+        })
     })
 }
