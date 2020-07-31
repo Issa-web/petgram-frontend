@@ -7,6 +7,16 @@ COMMENTS_URL = BASE_URL + 'comments/'
 
 window.allUsers = 'All the users'
 
+let glyphStates = {
+    "♡": "♥",
+    "♥": "♡"
+};
+
+let colorStates = {
+    "red" : "",
+    "": "red"
+};
+
 
 document.addEventListener("DOMContentLoaded", () => {
     // when user goes to link, page loads and sees login modal. 
@@ -508,7 +518,9 @@ const renderStuffForViewModal = (post, user) => {
 
     // commenthandler 
 
-    // likeHandler 
+    likeHandler(post);
+
+
     viewCommentHandler(post, user);
 
 }
@@ -534,7 +546,7 @@ const fetchCreateComment = (viewPostComments, post, user) => {
             "accept": "application/json"
         },
         body: JSON.stringify({
-            comment: viewPostComments[1].value,
+            comment: viewPostComments[0].value,
             user_id: user.id,
             post_id: post.id
         })
@@ -615,4 +627,26 @@ const deleteComment = (deleteCommentSpan, comment, userComment) => {
 
 function makesAlerts( messages ) {
     messages.forEach( message => alert(message) )
+}
+
+
+const likeHandler = (post) => {
+    const articleHearts = document.querySelector(".like-glyph");
+    const postImg = document.getElementById('view-post-img');
+
+    postImg.addEventListener('dblclick', (e) => {
+        console.log('I have been double clicked!')
+        const articleHearts = document.querySelector(".like-glyph");
+        let heart = articleHearts; 
+        heart.innerText = glyphStates[heart.innerText];
+        heart.style.color = colorStates[heart.style.color];
+    })
+
+  
+    articleHearts.addEventListener('click', (e) => {
+        let heart = e.target; 
+        heart.innerText = glyphStates[heart.innerText];
+        heart.style.color = colorStates[heart.style.color];
+        console.log(heart)
+    })
 }
