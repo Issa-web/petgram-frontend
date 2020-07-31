@@ -3,6 +3,7 @@ USERS_URL = BASE_URL + 'users'
 PETS_URL = BASE_URL + 'pets'
 USER_PETS_URL = BASE_URL + 'user_pets'
 POSTS_URL = BASE_URL + 'posts'
+COMMENTS_URL = BASE_URL + 'comments'
 
 window.allUsers = 'All the users'
 
@@ -152,7 +153,7 @@ const showUser = (user) => {
 
     const profileName = document.createElement('div')
     profileName.id = 'profile-name'
-    profileName.innerText = `${user.name}'s pets`
+    profileName.innerText = `Your pets`
     profileDiv.appendChild(profileName) 
 
     const petTitle = document.createElement('div')
@@ -346,7 +347,7 @@ const renderPet = (pet, user) => {
     petPosts.id = 'pet-posts'
     // on first load, render all posts of the pet that exists 
     mainPetPage.appendChild(petPosts)
-    renderPostsHandler(pet);
+    renderPostsHandler(pet, user);
 
     // 
 
@@ -385,13 +386,7 @@ const submitEventHandler = (newPostForm, pet, user) => {
         let petId = pet.id;
         let userId = user.id;
 
-        body = {pic_url: newPicUrl, caption: newCaption, pet_id: petId, user_id: userId}
-
         fetchCreatePost(pet, user, newPostForm)
-
-
-        
-
 
     }, {once: true})
 
@@ -416,7 +411,7 @@ const fetchCreatePost = (pet, user, newPostForm) => {
     .then(resp => resp.json())
     .then(post => {
         // render the posts onto the div container
-        renderPost(post);
+        renderPost(post, user);
 
         newPostForm = document.getElementById('new-post-modal');
         newPostForm.style.display = 'none';
@@ -424,7 +419,7 @@ const fetchCreatePost = (pet, user, newPostForm) => {
 }
 
 
-const renderPost = (post) => {
+const renderPost = (post, user) => {
     const petPosts = document.getElementById('pet-posts')
 
     const postDiv = document.createElement('div')
@@ -444,19 +439,19 @@ const renderPost = (post) => {
     // postCaption.id = 'post-caption'
     // postDiv.appendChild(postCaption)
 
-    viewPostHandler(postDiv, post);
+    viewPostHandler(postDiv, post, user);
 
     
 }
 
-const renderPostsHandler = (pet) => {
+const renderPostsHandler = (pet, user) => {
     // do a fetch request that gets all posts, we have the pet.id, use that pet.id to match to the posts with the same
     // pet.id
 
-    fetchAllPosts(pet);
+    fetchAllPosts(pet, user);
 }
 
-const fetchAllPosts = (pet) => {
+const fetchAllPosts = (pet, user) => {
 
     fetch(POSTS_URL)
     .then(resp => resp.json())
@@ -464,7 +459,7 @@ const fetchAllPosts = (pet) => {
 
         posts.forEach(post => {
             if (pet.id == post.pet_id){
-                renderPost(post);
+                renderPost(post, user);
             }
         })
     })
@@ -474,7 +469,7 @@ const fetchAllPosts = (pet) => {
 
 // handler that allows a post to show a modal window when clicked about the post. 
 
-const viewPostHandler = (postDiv, post) => {
+const viewPostHandler = (postDiv, post, user) => {
 
     postDiv.addEventListener('click', (e) => {
         e.preventDefault();
@@ -482,7 +477,7 @@ const viewPostHandler = (postDiv, post) => {
         viewPostModal.style.display = 'flex'
 
         // make seperate function that handle render on view post modal
-        renderStuffForViewModal(post);
+        renderStuffForViewModal(post, user);
 
 
         let viewPostClose = document.getElementById('view-post-close')
@@ -498,7 +493,7 @@ const viewPostHandler = (postDiv, post) => {
     // show likes on the picture as well. 
 }
 
-const renderStuffForViewModal = (post) => {
+const renderStuffForViewModal = (post, user) => {
     const modalContent = document.getElementById('view-post-modal-content')
     const viewPostImg = document.getElementById('view-post-img')
     viewPostImg.src = post.pic_url
@@ -506,5 +501,61 @@ const renderStuffForViewModal = (post) => {
     const viewPostCaption = document.getElementById('view-post-caption')
     viewPostCaption.innerText = post.caption
 
+    // commenthandler 
+
+    // likeHandler 
+    viewCommentHandler(post, user);
+
+
     // console.log(modalContent)
+}
+
+const viewCommentHandler = (post, user) => {
+    const viewPostComments = document.getElementById('view-post-comments')
+
+  
+
+    viewPostComments.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // console.log(viewPostComments[1].value)
+        // console.log(post.id)
+        // console.log(user)
+        fetchCreateComment(viewPostComments, post, user)
+    })
+    
+}
+
+const fetchCreateComment = (viewPostComments, post, user) => {
+    options = {
+        method: "POST",
+        headers: {
+            "content-type": "application/json",
+            "accept": "application/json"
+        },
+        body: JSON.stringify({
+            comment: viewPostComments[1].value,
+            user_id: user.id,
+            post_id: post.id
+        })
+    }
+
+    fetch(COMMENTS_URL, options)
+    .then(resp => resp.json())
+    .then(comment => {
+        // render the comment on the view modal 
+        console.log(comment)
+        renderCommentToModal(comment);
+    })
+}
+
+const renderCommentToModal = (comment) => {
+
+    // we should only render the comments of that certain post
+
+    const commentsContainer = document.getElementById('comments-container')
+    const userComment = document.createElement('div')
+    userComment.classList = 'user-comment'
+    userComment.innerHTML = `${comment.comment} <span id='delete-comment'>X</span> `
+    commentsContainer.appendChild(userComment)
 }

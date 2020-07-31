@@ -95,6 +95,7 @@ div#working-space {
 #new-pet-modal {
     width: 100%;
     height: 100%;
+
     background-color: rgba(0, 0, 0, 0.70);
     /* background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); */
 
@@ -176,7 +177,7 @@ input {
 }
 
 div#profile-name {
-    color: blue;
+    color: black;
     font-size: 40px;
     text-align: center;
 }
@@ -225,14 +226,21 @@ img#add-pet-button {
     cursor: pointer;
 }
 
+
+
 img#add-post-button {
     position: relative;
     top: 0;
-    right: 14px; 
     width: 50px;
     height:50px;
     cursor: pointer;
     margin: 20px;
+    opacity: 65%;
+}
+
+img#add-post-button:hover {
+
+    opacity:100%;
 }
 
 img#pet-page-pet-pic {
