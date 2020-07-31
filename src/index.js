@@ -483,6 +483,8 @@ const viewPostHandler = (postDiv, post, user) => {
         let viewPostClose = document.getElementById('view-post-close')
         viewPostClose.addEventListener('click', () => {
             viewPostModal.style.display = 'none'
+            const commentsContainer = document.getElementById('comments-container')
+            commentsContainer.innerHTML = '';
         })
 
 
@@ -501,13 +503,14 @@ const renderStuffForViewModal = (post, user) => {
     const viewPostCaption = document.getElementById('view-post-caption')
     viewPostCaption.innerText = post.caption
 
+    // also want to show all previous comments for this certain user out. 
+    showPreviousComments(post);
+
     // commenthandler 
 
     // likeHandler 
     viewCommentHandler(post, user);
 
-
-    // console.log(modalContent)
 }
 
 const viewCommentHandler = (post, user) => {
@@ -518,11 +521,8 @@ const viewCommentHandler = (post, user) => {
     viewPostComments.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        // console.log(viewPostComments[1].value)
-        // console.log(post.id)
-        // console.log(user)
         fetchCreateComment(viewPostComments, post, user)
-    })
+    }, {once: true})
     
 }
 
@@ -544,7 +544,6 @@ const fetchCreateComment = (viewPostComments, post, user) => {
     .then(resp => resp.json())
     .then(comment => {
         // render the comment on the view modal 
-        console.log(comment)
         renderCommentToModal(comment);
     })
 }
@@ -552,10 +551,35 @@ const fetchCreateComment = (viewPostComments, post, user) => {
 const renderCommentToModal = (comment) => {
 
     // we should only render the comments of that certain post
+    // clear the comment section of the modal before rendering it again.
+    
 
+    // find the user name from comment 
+    const userId = comment.user_id
     const commentsContainer = document.getElementById('comments-container')
-    const userComment = document.createElement('div')
-    userComment.classList = 'user-comment'
-    userComment.innerHTML = `${comment.comment} <span id='delete-comment'>X</span> `
-    commentsContainer.appendChild(userComment)
+    
+    window.allUsers.forEach(user => {
+        if (user.id == comment.user_id){
+            let userNameOfComment = user.name
+            
+            const userComment = document.createElement('div')
+            userComment.classList = 'user-comment'
+            userComment.innerHTML = `<span id='user-name-of-comment'>${userNameOfComment}</span>: ${comment.comment} <span id='delete-comment'>X</span> `
+            commentsContainer.appendChild(userComment)
+        }
+    })
+
+}
+
+const showPreviousComments = (post) => {
+    // fetch request all posts, find all the comments that match the clicked post id and display those 
+    fetch(COMMENTS_URL)
+    .then(resp => resp.json())
+    .then(allComments => {
+        allComments.forEach(comment => {
+            if(comment.post_id == post.id){
+                renderCommentToModal(comment);
+            }
+        })
+    })
 }

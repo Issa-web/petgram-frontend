@@ -309,12 +309,15 @@ img.post-img {
 .left-half {
     width: 50%;
     float: left;
+
 }
 
 .right-half {
     background-color: #b6701e;
     width: 50%;
     float: right;
+    max-height: 100%;
+    overflow-y: auto;
 }
 
 img#view-post-img {
