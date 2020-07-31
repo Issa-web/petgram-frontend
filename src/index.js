@@ -8,6 +8,9 @@ LIKES_URL = BASE_URL + 'likes/'
 
 window.allUsers = 'All the users'
 
+let allThePosts = [];
+let thisPost = ''
+
 let glyphStates = {
     "♡": "♥",
     "♥": "♡"
@@ -70,7 +73,6 @@ const checkUser = (username) => {
         console.log("No user found! Please create a new user.")
         newUserFormModal()
     } else {
-        console.log('User found!')
         clearLoginModal();
         showUser(user);
 
@@ -467,7 +469,7 @@ const fetchAllPosts = (pet, user) => {
     fetch(POSTS_URL)
     .then(resp => resp.json())
     .then(posts => {
-
+        allThePosts.push(posts)
         posts.forEach(post => {
             if (pet.id == post.pet_id){
                 renderPost(post, user);
@@ -513,7 +515,7 @@ const renderStuffForViewModal = (post, user) => {
 
     const viewPostCaption = document.getElementById('view-post-caption')
     viewPostCaption.innerText = post.caption
-    let totalLikeCount = [];
+
 
     const articleHearts = document.querySelector(".like-glyph");
     const likeCount = document.getElementById('like-count')
@@ -523,13 +525,11 @@ const renderStuffForViewModal = (post, user) => {
     heart.style.color = 'black';
     likeCount.innerText = 'No one likes this yet!';
 
-
-    showPreviousLikes(user, post, totalLikeCount);
+    showPreviousLikes(user, post);
 
     showPreviousComments(post);
 
-
-    likeHandler(post, user, totalLikeCount);
+    likeHandler(post, user);
 
     viewCommentHandler(post, user);
 
@@ -593,7 +593,7 @@ const renderCommentToModal = (comment) => {
             const deleteCommentSpan = document.getElementById(`comment-${comment.id}`)
             deleteCommentSpan.addEventListener('click', ()=> {
                 // once we clicked the specific comments delete button, we send a fetch to destroy! 
-                deleteComment(deleteCommentSpan, comment, userComment);
+                deleteComment(comment, userComment);
             })
         }
     })
@@ -614,8 +614,8 @@ const showPreviousComments = (post) => {
 }
 
 
-const deleteComment = (deleteCommentSpan, comment, userComment) => {
-    console.log(deleteCommentSpan)
+const deleteComment = (comment, userComment) => {
+
     console.log(`${comment.id} was clicked!`)
 
     // when we fetch, we have to fetch by the commentsurl/id 
@@ -640,24 +640,24 @@ function makesAlerts( messages ) {
 }
 
 
-const likeHandler = (post, user, totalLikeCount) => {
+const likeHandler = (post, user) => {
     const articleHearts = document.querySelector(".like-glyph");
     const postImg = document.getElementById('view-post-img');
 
     postImg.addEventListener('dblclick', (e) => {
         console.log('I have been double clicked!')
-        checkIfUserLiked(user, post, totalLikeCount);
+        checkIfUserLiked(user, post);
     })
 
   
     articleHearts.addEventListener('click', (e) => {
-        checkIfUserLiked(user, post, totalLikeCount);
+        checkIfUserLiked(user, post);
     })
 }
 
 // when a like button or double click happens, CREATE a like object, when clicked again, delete
 
-const createLike = (post, user, totalLikeCount) => {
+const createLike = (post, user) => {
     const heartLike = document.querySelector(".like-glyph").innerText
 
     options = {
@@ -676,14 +676,25 @@ const createLike = (post, user, totalLikeCount) => {
     fetch(LIKES_URL, options)
     .then(resp => resp.json())
     .then(like => {
-        totalLikeCount.push(like)
-        renderLikeToModal(like, totalLikeCount);
+
+        // we redo the fetch request for posts here
+        fetch(POSTS_URL)
+        .then(resp => resp.json())
+        .then(posts => {
+            posts.forEach(post => {
+                if (post.id == like.post_id) {
+                    renderLikeToModal(post)
+                }
+            })
+        })
+
+        // renderLikeToModal(thisPost);
     })
 }
 
 
 
-const renderLikeToModal = (like, totalLikeCount) => {
+const renderLikeToModal = (post) => {
 
     const articleHearts = document.querySelector(".like-glyph");
     const likeCount = document.getElementById('like-count')
@@ -691,19 +702,19 @@ const renderLikeToModal = (like, totalLikeCount) => {
     let heart = articleHearts; 
     heart.innerText = '';
     likeCount.innerText = 'No one likes this yet!';
+    let countOfLikers = post.likes.length
 
-
-    if (totalLikeCount.length === 0){
+    if (countOfLikers === 0){
         heart.innerText = "♡"
         heart.style.color = 'black';
-    } else if (totalLikeCount.length === 1) {
+    } else if (countOfLikers === 1) {
         heart.innerText = "♥"
         heart.style.color = 'red';
-        likeCount.innerText = `liked by ${totalLikeCount.length} person`
+        likeCount.innerText = `liked by ${post.likes.length} person`
     } else {
         heart.innerText = "♥"
         heart.style.color = 'red';
-        likeCount.innerText = `liked by ${totalLikeCount.length} people`
+        likeCount.innerText = `liked by ${post.likes.length} people`
     }
     
 
@@ -713,7 +724,7 @@ const renderLikeToModal = (like, totalLikeCount) => {
 
 }
 
-const checkIfUserLiked = (user, post, totalLikeCount) => {
+const checkIfUserLiked = (user, post) => {
     // if the user had already liked the post, if they click the post again to like, it will delete the like 
     //  if the user had not liked the post, it will create a like. 
     // First we will need to fetch ALL likes, then go through all the likes that having a matching user_id with user.id
@@ -735,10 +746,9 @@ const checkIfUserLiked = (user, post, totalLikeCount) => {
      
         if (userLike == undefined){
             // createLike
-            createLike(post, user, totalLikeCount);
+            createLike(post, user);
         } else {
             // if like has been LIKED by the user, delete the like
-            alert("USER HAS LIKED THIS BEFORE, LETS DESTROY IT")
             console.log("USER HAS LIKED THIS BEFORE, LETS DESTROY IT")
         }
 
@@ -748,17 +758,43 @@ const checkIfUserLiked = (user, post, totalLikeCount) => {
 }
 
 
-const showPreviousLikes = (user, post, totalLikeCount) => {
+const showPreviousLikes = (user, post) => {
     // fetch request all likes, find all the likes that match the clicked post id and display those 
     fetch(LIKES_URL)
     .then(resp => resp.json())
     .then(allLikes => {
         allLikes.forEach(like => {
             if(like.post_id == post.id){
-                totalLikeCount.push(like)
-                renderLikeToModal(like, totalLikeCount);
+                renderLikeToModal(post);
 
             } 
         })
     })
 }
+
+const deleteLike = (like) => {
+
+    // delete fetch and rerender the modal with the updated like number
+
+}
+
+// const deleteComment = (deleteCommentSpan, comment, userComment) => {
+
+//     console.log(`${comment.id} was clicked!`)
+
+//     // when we fetch, we have to fetch by the commentsurl/id 
+//     fetch((COMMENTS_URL + comment.id), { method: 'delete'})
+//     .then( resp => resp.json())
+//     .then( deletedComment => {
+
+//         if (deletedComment.errors){
+//             makesAlerts( deletedComment.errors)
+//         } else {
+//             // remove the front end comment
+//             userComment.remove();
+//             console.log( deletedComment.messages )
+            
+//         }
+//     })
+
+// }
