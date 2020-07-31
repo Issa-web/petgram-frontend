@@ -809,7 +809,7 @@ const sidebarNav = (currentUser) => {
     const mainNavBar = document.getElementById('main-navbar')
     const profileNavButton = document.getElementById('profile-page')
     const exploreNavButton = document.getElementById('explore')
-    const likesNavButton = document.getElementById('likes')
+    const likesNavButton = document.getElementById('petgram')
 
     mainNavBar.addEventListener('click', (e) => {
         console.log(e.target)
@@ -820,7 +820,7 @@ const sidebarNav = (currentUser) => {
             console.log('taking to the explore page')
             explorePage(currentUser)
         } else if (e.target == likesNavButton){
-            console.log('taking to the likes page')
+            console.log('will add later')
         }
     })
 }
