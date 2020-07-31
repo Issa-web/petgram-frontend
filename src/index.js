@@ -529,6 +529,8 @@ const renderStuffForViewModal = (post, user) => {
 
     viewCommentHandler(post, user);
 
+    checkIfUserLiked(user, post)
+
 }
 
 const viewCommentHandler = (post, user) => {
@@ -675,7 +677,6 @@ const createLike = (post, user, totalLikeCount) => {
     fetch(LIKES_URL, options)
     .then(resp => resp.json())
     .then(like => {
-        console.log(like)
         totalLikeCount.push(like)
         renderLikeToModal(like, totalLikeCount);
     })
@@ -715,6 +716,34 @@ const renderLikeToModal = (like, totalLikeCount) => {
 
 }
 
+const checkIfUserLiked = (user, post) => {
+    // if the user had already liked the post, if they click the post again to like, it will delete the like 
+
+    //  if the user had not liked the post, it will create a like. 
+
+    // First we will need to fetch ALL likes, then go through all the likes that having a matching user_id with user.id
+
+    console.log(user)
+    console.log(post)
+
+    fetch(LIKES_URL)
+    .then(resp => resp.json())
+    .then(allLikes => {
+        allLikes.forEach(like => {
+            let userLike = allLikes.find(like => {
+                return (like.user_id == user.id && like.post_id == post.id)
+            })
+            if (userLike == undefined){
+                // createLike
+                console.log('NO LIKE FOUND, CREATE ONE')
+            } else {
+                // if like has been LIKED by the user, delete the like
+                console.log("USER HAS LIKED THIS BEFORE, LETS DESTROY IT")
+            }
+        })
+    })
+}
+
 
 // check if username exists within database < use this as a template
 
@@ -745,11 +774,6 @@ const showPreviousLikes = (post, totalLikeCount) => {
     .then(resp => resp.json())
     .then(allLikes => {
         allLikes.forEach(like => {
-            // let totalLikeCount = [];
-
-            console.log(like.post_id)
-            console.log(post.id)
-
             if(like.post_id == post.id){
                 totalLikeCount.push(like)
                 renderLikeToModal(like, totalLikeCount);
