@@ -6,6 +6,8 @@ POSTS_URL = BASE_URL + 'posts/'
 COMMENTS_URL = BASE_URL + 'comments/'
 LIKES_URL = BASE_URL + 'likes/'
 
+let currentUser;
+
 window.allUsers = 'All the users'
 
 let allThePosts = [];
@@ -26,6 +28,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // when user goes to link, page loads and sees login modal. 
     loginModal();
     // renderPets(); 
+    
+    
 });
 
 
@@ -73,8 +77,10 @@ const checkUser = (username) => {
         console.log("No user found! Please create a new user.")
         newUserFormModal()
     } else {
+        let currentUser = user
         clearLoginModal();
-        showUser(user);
+        showUser(currentUser);
+        console.log(currentUser)
 
     }
 })
@@ -134,8 +140,9 @@ const fetchCreateUser = (newUserForm) => {
     .then(resp => resp.json())
     .then(user => {
         // once a new user is created, clear out modal screens and take new user to first page.
+        let currentUser = user
         clearLoginModal();
-        showUser(user);
+        showUser(currentUser);
     })
 }
 
@@ -150,15 +157,18 @@ const clearLoginModal = () => {
 const showUser = (user) => {
     let main = document.getElementById('main')
 
-    let workingSpace = document.getElementById("working-space") 
-    main.removeChild(workingSpace)
-    
     main.innerText = user.name
+
+    let workingSpace = document.createElement('div')
+    workingSpace.innerHTML = '';
+    workingSpace.id = 'working-space'
+    
+    main.appendChild(workingSpace)
+    
 
     petButtonLogo(user);
 
 
-    workingSpace.innerHTML = '';
     main.appendChild(workingSpace)
     const profileDiv = document.createElement('div')
     profileDiv.id = 'profile-div'
@@ -195,6 +205,9 @@ const showUser = (user) => {
             renderPet(pet, user);
         })
     })
+
+    sidebarNav(user);
+
 
 }
 
@@ -298,7 +311,8 @@ const updateAllUsers = (userPet, user) => {
         users.find(user => {
             if(user.id == userPet.user_id) {
                 // its showing double of the pets after each add
-                showUser(user)
+                let currentUser = user;
+                showUser(currentUser)
                 // petButtonLogo(user)
             }
         
@@ -623,8 +637,6 @@ const showPreviousComments = (post) => {
 
 const deleteComment = (comment, userComment) => {
 
-    console.log(`${comment.id} was clicked!`)
-
     // when we fetch, we have to fetch by the commentsurl/id 
     fetch((COMMENTS_URL + comment.id), { method: 'delete'})
     .then( resp => resp.json())
@@ -652,7 +664,6 @@ const likeHandler = (post, user) => {
     const postImg = document.getElementById('view-post-img');
 
     postImg.addEventListener('dblclick', (e) => {
-        console.log('I have been double clicked!')
         checkIfUserLiked(user, post);
     })
 
@@ -705,7 +716,8 @@ const renderLikeToModal = (post) => {
     const likeCount = document.getElementById('like-count')
 
     let heart = articleHearts; 
-    heart.innerText = '';
+    heart.innerText = "♡";
+    heart.style.color = 'black';
     likeCount.innerText = 'No one likes this yet!';
     let countOfLikers = post.likes.length
 
@@ -790,23 +802,24 @@ const deleteLike = (like, post) => {
 
 }
 
-// const deleteComment = (deleteCommentSpan, comment, userComment) => {
 
-//     console.log(`${comment.id} was clicked!`)
 
-//     // when we fetch, we have to fetch by the commentsurl/id 
-//     fetch((COMMENTS_URL + comment.id), { method: 'delete'})
-//     .then( resp => resp.json())
-//     .then( deletedComment => {
 
-//         if (deletedComment.errors){
-//             makesAlerts( deletedComment.errors)
-//         } else {
-//             // remove the front end comment
-//             userComment.remove();
-//             console.log( deletedComment.messages )
-            
-//         }
-//     })
+const sidebarNav = (currentUser) => {
+    const mainNavBar = document.getElementById('main-navbar')
+    const profileNavButton = document.getElementById('profile-page')
+    const exploreNavButton = document.getElementById('explore')
+    const likesNavButton = document.getElementById('likes')
 
-// }
+    mainNavBar.addEventListener('click', (e) => {
+        console.log(e.target)
+        if (e.target == profileNavButton){
+            console.log('take me to the homepage')
+            showUser(currentUser)
+        } else if (e.target == exploreNavButton){
+            console.log('taking to the explore page')
+        } else if (e.target == likesNavButton){
+            console.log('taking to the likes page')
+        }
+    })
+}
