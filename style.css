@@ -263,6 +263,23 @@ img#post-img {
 }
 
 
+/* explore page */
+
+#explore-container{
+    /* adds flex to make 3 images per row */
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0;
+    justify-content: space-evenly;
+    margin-left: 20px;
+
+
+ 
+    font-size: 20px;
+    text-align: center;
+    
+
+}
 
 
 
@@ -281,6 +298,20 @@ div#pet-posts {
     font-size: 20px;
     text-align: center;
 }
+
+div.explore-post-div {
+    /* adds flex style to each card( 3 per row) */
+        list-style: none;
+        /* flex: 0 0 33.333333%; */
+        position: relative;
+        overflow: hidden; 
+    
+        float: left;
+        width:  250px; 
+        height: 250px;
+        object-fit: cover;
+        opacity: 85%;
+    }
 
 div.post-div {
 /* adds flex style to each card( 3 per row) */
@@ -302,6 +333,12 @@ div.post-div:hover {
 }
 
 img.post-img {
+    width: 250px;
+    height: 250px;
+    padding: 10px
+}
+
+img.explore-post-img {
     width: 250px;
     height: 250px;
     padding: 10px

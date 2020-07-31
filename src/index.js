@@ -818,8 +818,45 @@ const sidebarNav = (currentUser) => {
             showUser(currentUser)
         } else if (e.target == exploreNavButton){
             console.log('taking to the explore page')
+            explorePage(currentUser)
         } else if (e.target == likesNavButton){
             console.log('taking to the likes page')
         }
     })
 }
+
+
+const explorePage = (user) => {
+    const main = document.getElementById('main')
+    main.innerHTML = ''
+
+    fetch(POSTS_URL)
+    .then(resp => resp.json())
+    .then(allPosts => {
+        const exploreContainer = document.createElement('div')
+        exploreContainer.id = 'explore-container'
+        allPosts.forEach(post => {
+            console.log(post)
+            renderExplorePage(post, user, exploreContainer);
+        })
+    })
+}
+
+const renderExplorePage = (post, user, exploreContainer) => {
+    const main = document.getElementById('main')
+    main.appendChild(exploreContainer)
+
+    const explorePostDiv = document.createElement('div')
+    explorePostDiv.classList = 'explore-post-div'
+    exploreContainer.append(explorePostDiv)
+
+    const explorePostPic = document.createElement('img')
+    explorePostPic.classList = 'explore-post-img'
+    explorePostPic.src = post.pic_url 
+    explorePostDiv.appendChild(explorePostPic)
+
+    viewPostHandler(explorePostDiv, post, user )
+
+}
+
+
