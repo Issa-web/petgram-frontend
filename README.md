@@ -1,1 +1,24 @@
-PETGRAM Single Page Application
+# Petgram
+A social media single page web application for pets using Javascript and Ruby on Rails. 
+
+<!-- ![Petgram]() -->
+
+## Project Details 
+
+Petgram is an single page application that allows a user to:
+1. Login and add pets that a user owns.
+2. Select a pet and add images for that specific pet. 
+3. Like and comment on a post of the pet. 
+4. Browse through the explore page to see posts of other pets.
+
+Video demo link: 
+
+
+## Installation Instructions 
+
+1. Clone repository to your computer 
+2. Type open index.html to open the file path to the application. 
+3. Start up the server at: https://github.com/DevDave0/petgram-backend to fully start application. 
+
+
+Project was built using Javascript, custom CSS and Ruby on Rails. 
