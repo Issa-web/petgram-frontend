@@ -11,7 +11,7 @@ Petgram is an single page application that allows a user to:
 3. Like and comment on a post of the pet. 
 4. Browse through the explore page to see posts of other pets.
 
-Video demo link: 
+Video demo link: https://youtu.be/9GXSqkO9nYg
 
 
 ## Installation Instructions 
